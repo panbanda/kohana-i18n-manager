@@ -3,6 +3,46 @@
 class Controller_I18n extends Controller {
 	
 	/**
+	 * This generates a language file based off of the __() i18n function
+	 * native to Kohana.  It scans your application directory for the
+	 * usage of that function, and makes the language file from the key.
+	 *
+	 * @option  --lang  Language: en, fr, en-us
+	 */
+	public function action_generate()
+	{
+		$options = CLI::options('lang');
+		
+		if (! isset($options['lang'])) die('You must specify a language to generate with --lang.');
+		
+		$files = Kohana::list_files(NULL, array(APPPATH));
+		$files = Arr::flatten($files);
+		
+		// Array for the keys
+		$data = array();
+		
+		foreach ($files as $rel => $file)
+		{
+			preg_match_all('/__\(\'([^\']*)\'\)/is', file_get_contents($file), $matches);
+			
+			foreach ($matches[1] as $key)
+			{
+				$class = new stdclass();
+				$class->key = $key;
+				$class->text = $key;
+				
+				$data[] = $class;
+			}
+		}
+		
+		$content = View::factory('i18n/lang_file')->set('langs', $data);
+		
+		$this->__write_file($options['lang'], $content);
+		
+		echo "Complete.\n";
+	}
+	
+	/**
 	 * This copies keys from one language to another. It will
 	 * take the language keys and overwrite any existing ones,
 	 * and then write it out to the file again.
