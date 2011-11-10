@@ -1,0 +1,1 @@
+Internationalization can be a pain, and then you have to send translation files off to different people, import them, consolidate them, copy keys between files, add keys to the language files-- it is a huge pain in the neck, this module is attempting to help solve some of those pains.
