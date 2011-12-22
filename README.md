@@ -8,7 +8,7 @@ Here are a few quick examples to get you started in managing your localizations.
 
 ### Generating a language file
 
-This goes through your application directory and looks for the localizing helper function (found in system/base.php).  It generates a language file based off of all the occurances it finds.
+This goes through your application directory and looks for the localizing helper function (found in system/base.php).  It generates a language file based off of all the occurrences it finds.
 
 		php index.php --uri=i18n/generate --lang=en
 
@@ -26,7 +26,7 @@ Find out which keys exist in the source, but not in the target file
 
 ### Copy language files to a database
 
-Assuming you already have a database configured, it will automatically generate the table and put the language keys (from all language files) into the database.
+Assuming you already have a database configured, it will automatically generate the table (if it does not already exist) and put the language keys (from all language files) into the database.
 
 		php index.php --uri=i18n/db_import
 
