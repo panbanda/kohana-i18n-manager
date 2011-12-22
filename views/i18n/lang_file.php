@@ -8,7 +8,10 @@ echo "return array\n(\n";
 
 foreach ($langs as $lang)
 {
-	echo "\t'".str_replace("'", "\'", $lang->key)."' => '".str_replace("'", "\'", $lang->text)."',\n";
+	// Get rid of invalid characters
+	$lang->text = str_replace("'", "\'", $lang->text);
+	
+	echo "\t'".str_replace("'", "\'", $lang->key)."' => '".$lang->text."',\n";
 }
 
 echo ");";
