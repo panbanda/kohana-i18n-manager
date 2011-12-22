@@ -2,6 +2,13 @@
 
 class Controller_I18n extends Controller {
 	
+	public function before()
+	{
+		parent::before();
+		
+		echo "+ ---------- start ----------- +\n\n";
+	}
+	
 	/**
 	 * This generates a language file based off of the __() i18n function
 	 * native to Kohana.  It scans your application directory for the
@@ -38,8 +45,6 @@ class Controller_I18n extends Controller {
 		$content = View::factory('i18n/lang_file')->set('langs', $data);
 		
 		$this->__write_file($options['lang'], $content);
-		
-		echo "Complete.\n";
 	}
 	
 	/**
@@ -88,8 +93,35 @@ class Controller_I18n extends Controller {
 		$content = View::factory('i18n/lang_file')->set('langs', $data_formatted);
 		
 		$this->__write_file($options['target'], $content);
+	}
+	
+	/**
+	 * Display which keys are different between sources
+	 *
+	 * @option  --source  string  Language en, us, fr-fr
+	 * @option  --target  string  Language en, us, fr-fr
+	 */
+	public function action_diff_keys()
+	{
+		$options = CLI::options('source', 'target');
 		
-		echo "Complete.\n";
+		// Get subdirectories
+		$source = str_replace('-', '/', $options['source']);
+		$target = str_replace('-', '/', $options['target']);
+		
+		$source_file = APPPATH."i18n/$source".EXT;
+		$target_file = APPPATH."i18n/$target".EXT;
+		
+		// Grab the files, unless they dont exist yet
+		$source_data = is_file($source_file) ? include $source_file : array();
+		$target_data = is_file($target_file) ? include $target_file : array();
+		
+		echo "[$source=".count($source_data)." $target=".count($target_data)."]\n\n";
+		
+		$diff = array_diff_key($source_data, $target_data);
+		
+		echo "Keys present in '$source' but not in '$target':\n";
+		print_r($diff);
 	}
 	
 	/**
@@ -166,6 +198,13 @@ class Controller_I18n extends Controller {
 		
 			$this->__write_file($lang['language'], $content);
 		}
+	}
+	
+	public function after()
+	{
+		echo "\n\n+ --------- complete --------- +\n\n";
+		
+		parent::after();
 	}
 	
 	private function __write_file($lang, $content)
